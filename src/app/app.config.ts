@@ -1,5 +1,5 @@
 import { ApplicationConfig, importProvidersFrom } from '@angular/core';
-import { HttpClient, provideHttpClient } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withFetch } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { provideRouter } from '@angular/router';
@@ -19,7 +19,7 @@ export function HttpLoaderFactory(http: HttpClient) {
  
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideHttpClient(),  
+    provideHttpClient(withFetch()),  
     provideRouter(routes),
     importProvidersFrom(
       TranslateModule.forRoot({
