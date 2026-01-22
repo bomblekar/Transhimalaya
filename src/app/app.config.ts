@@ -1,12 +1,34 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom } from '@angular/core';
+import { HttpClient, provideHttpClient } from '@angular/common/http';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
 import { provideRouter } from '@angular/router';
-
 import { routes } from './app.routes';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+ 
+export class CustomLoader implements TranslateLoader {
+  constructor(private http: HttpClient) {}
 
+  getTranslation(lang: string): Observable<any> { 
+    return this.http.get(`./public/locale/${lang}.json`);
+  }
+}
+ 
+export function HttpLoaderFactory(http: HttpClient) {
+  return new CustomLoader(http);
+}
+ 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideBrowserGlobalErrorListeners(),
-    provideRouter(routes), provideClientHydration(withEventReplay())
+    provideHttpClient(),  
+    provideRouter(routes),
+    importProvidersFrom(
+      TranslateModule.forRoot({
+        loader: {
+          provide: TranslateLoader,
+          useFactory: HttpLoaderFactory,
+          deps: [HttpClient]
+        }
+      })
+    ) 
   ]
 };
