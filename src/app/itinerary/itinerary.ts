@@ -66,7 +66,7 @@ export class ItineraryComponent implements AfterViewInit, OnDestroy {
   // Banner Images
   banners = [
     {
-      image: 'assets/images/banner1.jpg',
+      image: '../assets/images/banner1.jpg',
       title: 'Discover the Himalayas',
       subtitle: 'Experience the adventure of a lifetime',
       alt: 'Himalayas Banner'
@@ -89,7 +89,7 @@ export class ItineraryComponent implements AfterViewInit, OnDestroy {
   tourPackages = [
     {
       name: 'Spiti Valley Adventure',
-      cost: 24500,
+      cost: 32000,
       itinerary: [
         { 
           day: 'Day 1', 
@@ -137,7 +137,7 @@ export class ItineraryComponent implements AfterViewInit, OnDestroy {
     },
     {
       name: 'Magical Kinnaur',
-      cost: 18500,
+      cost: 22000,
       itinerary: [
         { 
           day: 'Day 1', 
