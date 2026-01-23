@@ -43,7 +43,7 @@ h1, h2, h3 {
   padding: 40px 20px;
   background: #f8fafc;
   scrollbar-width: none;
-  scroll-behavior: smooth; /* Critical for smooth auto-slide */
+  scroll-behavior: smooth;
 }
 
 .banner-container::-webkit-scrollbar {
@@ -113,29 +113,69 @@ h1, h2, h3 {
   margin: 0 auto;
 }
 
+/* --- UPDATED: Attractive Package Card Style --- */
 .tour-package {
-  background: #fff;
+  /* Faint warm gradient to match gold theme */
+  background: linear-gradient(135deg, #fffcf4 0%, #ffffff 100%);
+  border: 1px solid rgba(0,0,0,0.08); /* Softer border */
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-  transition: all 0.3s ease;
-  border: 1px solid #e2e8f0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
 }
 
 .tour-package:hover {
   transform: translateY(-8px);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.15);
+  /* Highlight border with gold on hover */
+  border-color: #fbbf24;
 }
 
-.package-name {
+.tour-package.is-open {
+  border-color: #cbd5e1;
+  background: #ffffff; /* Clean white when open to focus on reading */
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* --- Package Header (Main Toggle) --- */
+.package-header-main {
   background: #2c3e50;
   color: white;
   padding: 20px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.2s;
+  user-select: none;
+}
+
+.package-header-main:hover {
+  background-color: #34495e;
+}
+
+.package-name {
   font-size: 1.25rem;
   margin: 0;
-  text-align: center;
+}
+
+.package-toggle-icon {
+  font-size: 1.5rem;
+  color: #fbbf24;
+  font-weight: bold;
+  line-height: 1;
+}
+
+/* --- Package Body (Collapsible Area) --- */
+.package-body {
+  animation: slideDownPackage 0.4s ease-out;
+}
+
+@keyframes slideDownPackage {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .package-cost {
@@ -148,9 +188,10 @@ h1, h2, h3 {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border: 1px solid #dcfce7;
 }
 
-/* --- Accordion Styles --- */
+/* --- Accordion Styles (Inner Daily Schedule) --- */
 .itinerary-accordion {
   padding: 0 20px 20px;
   flex-grow: 1;

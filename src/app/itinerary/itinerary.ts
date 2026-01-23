@@ -13,6 +13,9 @@ import { TranslateModule } from '@ngx-translate/core';
 export class ItineraryComponent implements AfterViewInit, OnDestroy {
   operatorName = 'RTS Travels';
   
+  // --- FIX: Track ONLY the name of the currently open package ---
+  openPackageName: string | null = null; 
+
   // Banner Auto-Scroll Logic
   @ViewChild('bannerContainer') bannerContainer!: ElementRef;
   slideInterval: any;
@@ -26,10 +29,10 @@ export class ItineraryComponent implements AfterViewInit, OnDestroy {
   }
 
   startAutoSlide() {
-    this.stopAutoSlide(); // Clear existing to be safe
+    this.stopAutoSlide(); 
     this.slideInterval = setInterval(() => {
       this.scrollToNext();
-    }, 3000); // Slides every 3 seconds
+    }, 3000); 
   }
 
   stopAutoSlide() {
@@ -44,29 +47,25 @@ export class ItineraryComponent implements AfterViewInit, OnDestroy {
 
   scrollToNext() {
     if (!this.bannerContainer) return;
-    
     const container = this.bannerContainer.nativeElement;
-    const scrollAmount = container.offsetWidth * 0.85; // Scroll one card width
+    const scrollAmount = container.offsetWidth * 0.85; 
     
-    // Check if we reached the end
     if (container.scrollLeft + container.offsetWidth >= container.scrollWidth - 10) {
-      container.scrollTo({ left: 0, behavior: 'smooth' }); // Loop back to start
+      container.scrollTo({ left: 0, behavior: 'smooth' }); 
     } else {
       container.scrollTo({ left: container.scrollLeft + scrollAmount, behavior: 'smooth' });
     }
   }
 
-  // Contact Info
   contactInfo = {
     address: '123 Mountain View Road, Manali, HP, India',
     phone: '+91 98160 39602',
     email: 'negiranjeet662@gmail.com'
   };
 
-  // Banner Images
   banners = [
     {
-      image: '../assets/images/banner1.jpg',
+      image: 'assets/images/banner1.jpg',
       title: 'Discover the Himalayas',
       subtitle: 'Experience the adventure of a lifetime',
       alt: 'Himalayas Banner'
@@ -85,52 +84,52 @@ export class ItineraryComponent implements AfterViewInit, OnDestroy {
     }
   ];
 
-  // Tour Packages Data
   tourPackages = [
     {
       name: 'Spiti Valley Adventure',
       cost: 32000,
+      // No 'isExpanded' needed here anymore
       itinerary: [
         { 
           day: 'Day 1', 
           title: 'Shimla ➝ Chitkul', 
-          details: 'Scenic drive via Rampur & Sangla Valley. Visit Rakcham & Baspa River. Overnight stay at Chitkul (Last village of India).', 
+          details: `Scenic drive via Rampur & Sangla Valley. Visit Rakcham & Baspa River. Overnight stay at Chitkul (Last village of India).`, 
           expanded: false 
         },
         { 
           day: 'Day 2', 
           title: 'Chitkul ➝ Kalpa', 
-          details: 'Drive through Sangla Valley. Visit Kalpa village & Kinnaur Kailash views. Local sightseeing & sunset view. Overnight stay at Kalpa.', 
+          details: `Drive through Sangla Valley. Visit Kalpa village & Kinnaur Kailash views. Local sightseeing & sunset view. Overnight stay at Kalpa.`, 
           expanded: false 
         },
         { 
           day: 'Day 3', 
           title: 'Kalpa ➝ Tabo', 
-          details: 'En-route Khab Sangam, Nako Lake & Geyu Mummy. Visit Tabo Monastery (UNESCO site). Overnight stay at Tabo.', 
+          details: `En-route Khab Sangam, Nako Lake & Geyu Mummy. Visit Tabo Monastery (UNESCO site). Overnight stay at Tabo.`, 
           expanded: false 
         },
         { 
           day: 'Day 4', 
           title: 'Tabo ➝ Kaza', 
-          details: 'Visit Dhankar Monastery & Lake. Reach Kaza, the heart of Spiti. Overnight stay at Kaza.', 
+          details: `Visit Dhankar Monastery & Lake. Reach Kaza, the heart of Spiti. Overnight stay at Kaza.`, 
           expanded: false 
         },
         { 
           day: 'Day 5', 
           title: 'Kaza Local Sightseeing', 
-          details: 'Visit Key Monastery, Kibber, Langza, Hikkim (World’s highest post office), and Komic. Overnight stay at Kaza.', 
+          details: `Visit Key Monastery, Kibber, Langza, Hikkim (World's highest post office), and Komic. Overnight stay at Kaza.`, 
           expanded: false 
         },
         { 
           day: 'Day 6', 
           title: 'Kaza ➝ Losar', 
-          details: 'Scenic drive through cold desert landscapes. Relax and acclimatize. Overnight stay at Losar.', 
+          details: `Scenic drive through cold desert landscapes. Relax and acclimatize. Overnight stay at Losar.`, 
           expanded: false 
         },
         { 
           day: 'Day 7', 
           title: 'Losar ➝ Manali (Drop)', 
-          details: 'Cross Kunzum Pass. Drive via Chandratal route (weather permitting). Drop at Manali.', 
+          details: `Cross Kunzum Pass. Drive via Chandratal route (weather permitting). Drop at Manali.`, 
           expanded: false 
         }
       ]
@@ -142,31 +141,31 @@ export class ItineraryComponent implements AfterViewInit, OnDestroy {
         { 
           day: 'Day 1', 
           title: 'Shimla ➝ Sarahan', 
-          details: 'Distance: ~170 km | 6–7 hrs. En-route sightseeing: Rampur Bushahr, Sutlej River views. Visit: Bhimakali Temple. Overnight stay: Sarahan.', 
+          details: `Distance: ~170 km | 6–7 hrs. En-route sightseeing: Rampur Bushahr, Sutlej River views. Visit: Bhimakali Temple. Overnight stay: Sarahan.`, 
           expanded: false 
         },
         { 
           day: 'Day 2', 
           title: 'Sarahan ➝ Chitkul', 
-          details: 'Distance: ~170 km | 6–7 hrs. En-route sightseeing: Karcham Dam, Sangla Valley, Rakchham. Visit: Last Indian Village – Chitkul, Baspa River. Overnight stay: Chitkul.', 
+          details: `Distance: ~170 km | 6–7 hrs. En-route sightseeing: Karcham Dam, Sangla Valley, Rakchham. Visit: Last Indian Village – Chitkul, Baspa River. Overnight stay: Chitkul.`, 
           expanded: false 
         },
         { 
           day: 'Day 3', 
           title: 'Chitkul ➝ Kalpa', 
-          details: 'Distance: ~90 km | 4–5 hrs. En-route sightseeing: Sangla, Karcham, Roghi Village. Visit: Suicide Point, Apple Orchards. Overnight stay: Kalpa.', 
+          details: `Distance: ~90 km | 4–5 hrs. En-route sightseeing: Sangla, Karcham, Roghi Village. Visit: Suicide Point, Apple Orchards. Overnight stay: Kalpa.`, 
           expanded: false 
         },
         { 
           day: 'Day 4', 
           title: 'Kalpa Local Sightseeing', 
-          details: 'Visit: Kinnaur Kailash View Point, Kalpa Monastery, Peo Market. Enjoy scenic village walks & photography. Overnight stay: Kalpa.', 
+          details: `Visit: Kinnaur Kailash View Point, Kalpa Monastery, Peo Market. Enjoy scenic village walks & photography. Overnight stay: Kalpa.`, 
           expanded: false 
         },
         { 
           day: 'Day 5', 
           title: 'Kalpa ➝ Shimla (Drop)', 
-          details: 'Distance: ~230 km | 8–9 hrs. Return via Reckong Peo – Rampur. Tour ends with beautiful mountain memories.', 
+          details: `Distance: ~230 km | 8–9 hrs. Return via Reckong Peo – Rampur. Tour ends with beautiful mountain memories.`, 
           expanded: false 
         }
       ]
@@ -179,8 +178,18 @@ export class ItineraryComponent implements AfterViewInit, OnDestroy {
     { text: 'A once-in-a-lifetime experience. Everything was perfect!', author: 'Emily Johnson' }
   ];
 
-  // Accordion Toggle
   toggleDay(day: any) {
     day.expanded = !day.expanded;
+  }
+
+  // --- FIX: Logic to compare Names ---
+  togglePackage(pkgName: string) {
+    // If the clicked one is already open, close it (set to null).
+    // Otherwise, set it to the new name.
+    if (this.openPackageName === pkgName) {
+      this.openPackageName = null;
+    } else {
+      this.openPackageName = pkgName;
+    }
   }
 }

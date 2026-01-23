@@ -21,31 +21,38 @@
   <h1 class="title">Explore Our Tour Packages</h1>
   
   <div class="tour-packages">
-    <div *ngFor="let package of tourPackages" class="tour-package">
-      <h2 class="package-name">{{ package.name }}</h2>
+    <div *ngFor="let package of tourPackages" class="tour-package" [class.is-open]="openPackageName === package.name">
       
-      <div class="package-cost">
-        <span class="cost-label">Price:</span> 
-        <span class="cost-value">{{ package.cost | currency:'INR' }}</span> 
+      <div class="package-header-main" (click)="togglePackage(package.name)">
+        <h2 class="package-name">{{ package.name }}</h2>
+        <span class="package-toggle-icon">{{ openPackageName === package.name ? '−' : '+' }}</span>
       </div>
-
-      <div class="itinerary-accordion">
-        <h3 class="itinerary-heading">Daily Schedule</h3>
+      
+      <div class="package-body" *ngIf="openPackageName === package.name">
         
-        <div *ngFor="let day of package.itinerary" class="accordion-item">
+        <div class="package-cost">
+          <span class="cost-label">Price:</span> 
+          <span class="cost-value">{{ package.cost | currency:'INR' }}</span> 
+        </div>
+
+        <div class="itinerary-accordion">
+          <h3 class="itinerary-heading">Daily Schedule</h3>
           
-          <div class="accordion-header" (click)="toggleDay(day)" [class.active]="day.expanded">
-            <div class="header-left">
-              <span class="day-badge">{{ day.day }}</span>
-              <span class="day-title">{{ day.title }}</span>
+          <div *ngFor="let day of package.itinerary" class="accordion-item">
+            
+            <div class="accordion-header" (click)="toggleDay(day)" [class.active]="day.expanded">
+              <div class="header-left">
+                <span class="day-badge">{{ day.day }}</span>
+                <span class="day-title">{{ day.title }}</span>
+              </div>
+              <span class="toggle-icon">{{ day.expanded ? '−' : '+' }}</span>
             </div>
-            <span class="toggle-icon">{{ day.expanded ? '−' : '+' }}</span>
-          </div>
 
-          <div class="accordion-content" *ngIf="day.expanded">
-            <p>{{ day.details }}</p>
-          </div>
+            <div class="accordion-content" *ngIf="day.expanded">
+              <p>{{ day.details }}</p>
+            </div>
 
+          </div>
         </div>
       </div>
       </div>
