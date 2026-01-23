@@ -1,7 +1,65 @@
 {
-    "APP": {
-      "TITLE": "Welcome",
-      "LOGIN": "Login"
+  "OPERATOR_NAME": "RTS Travels",
+  "TAGLINE": "Your Trusted Travel Partner",
+  "BTN_LANG": "Read in Hindi",
+  "TITLES": {
+    "EXPLORE": "Explore Our Tour Packages",
+    "TESTIMONIALS": "What Our Customers Say",
+    "DAILY_SCHEDULE": "Daily Schedule",
+    "CONTACT": "Get in Touch"
+  },
+  "LABELS": {
+    "PRICE": "Price:",
+    "RIGHTS": "All rights reserved."
+  },
+  "CONTACT": {
+    "ADDRESS": "123 Mountain View Road, Manali, HP, India"
+  },
+  "BANNERS": [
+    { "image": "assets/images/banner1.jpg", "title": "Discover the Himalayas", "subtitle": "Experience the adventure of a lifetime" },
+    { "image": "assets/images/banner2.jpg", "title": "Cultural Wonders", "subtitle": "Immerse yourself in rich traditions" },
+    { "image": "assets/images/banner3.jpg", "title": "Road Trips", "subtitle": "Drive through the worlds highest passes" }
+  ],
+  "TOUR_PACKAGES": [
+    {
+      "name": "Spiti Valley Adventure",
+      "cost": "32000",
+      "itinerary": [
+        { "day": "Day 1", "title": "Shimla ➝ Chitkul", "details": "Scenic drive via Rampur & Sangla Valley. Visit Rakcham & Baspa River. Overnight stay at Chitkul." },
+        { "day": "Day 2", "title": "Chitkul ➝ Kalpa", "details": "Drive through Sangla Valley. Visit Kalpa village & Kinnaur Kailash views. Overnight stay at Kalpa." },
+        { "day": "Day 3", "title": "Kalpa ➝ Tabo", "details": "En-route Khab Sangam, Nako Lake & Geyu Mummy. Visit Tabo Monastery. Overnight stay at Tabo." },
+        { "day": "Day 4", "title": "Tabo ➝ Kaza", "details": "Visit Dhankar Monastery & Lake. Reach Kaza, the heart of Spiti. Overnight stay at Kaza." },
+        { "day": "Day 5", "title": "Kaza Local", "details": "Visit Key Monastery, Kibber, Langza, Hikkim, and Komic. Overnight stay at Kaza." },
+        { "day": "Day 6", "title": "Kaza ➝ Losar", "details": "Scenic drive through cold desert landscapes. Relax and acclimatize. Overnight stay at Losar." },
+        { "day": "Day 7", "title": "Losar ➝ Manali", "details": "Cross Kunzum Pass. Drive via Chandratal route (weather permitting). Drop at Manali." }
+      ]
+    },
+    {
+      "name": "Magical Kinnaur",
+      "cost": "22000",
+      "itinerary": [
+        { "day": "Day 1", "title": "Shimla ➝ Sarahan", "details": "Visit Bhimakali Temple. Overnight stay: Sarahan." },
+        { "day": "Day 2", "title": "Sarahan ➝ Chitkul", "details": "Visit Last Indian Village – Chitkul, Baspa River. Overnight stay: Chitkul." },
+        { "day": "Day 3", "title": "Chitkul ➝ Kalpa", "details": "Visit Suicide Point, Apple Orchards. Overnight stay: Kalpa." },
+        { "day": "Day 4", "title": "Kalpa Local", "details": "Visit Kinnaur Kailash View Point, Kalpa Monastery. Overnight stay: Kalpa." },
+        { "day": "Day 5", "title": "Kalpa ➝ Shimla", "details": "Return via Reckong Peo. Tour ends." }
+      ]
+    },
+    {
+      "name": "Shimla Manali Special",
+      "cost": "18500",
+      "itinerary": [
+        { "day": "Day 1", "title": "Chandigarh ➝ Shimla", "details": "Pickup from Chandigarh. Drive to Shimla (4 hrs). Check-in and evening walk at Mall Road & Ridge. Overnight stay at Shimla." },
+        { "day": "Day 2", "title": "Shimla & Kufri Sightseeing", "details": "Visit Kufri, Green Valley, and Jakhu Temple. Evening free for leisure. Overnight stay at Shimla." },
+        { "day": "Day 3", "title": "Shimla ➝ Manali", "details": "Scenic drive to Manali (7-8 hrs). En-route visit Pandoh Dam and Hanogi Mata Temple. River Rafting in Kullu. Overnight stay at Manali." },
+        { "day": "Day 4", "title": "Manali Local & Solang Valley", "details": "Visit Hadimba Temple, Vashisht Baths. Drive to Solang Valley and Atal Tunnel. Overnight stay at Manali." },
+        { "day": "Day 5", "title": "Manali ➝ Chandigarh Drop", "details": "Morning drive back to Chandigarh (8 hrs). Drop at Railway Station/Airport. Tour ends." }
+      ]
     }
-  }
-  
+  ],
+  "TESTIMONIALS": [
+    { "text": "The Ranjeet taxi services was breathtaking! Highly recommend.", "author": "John Doe" },
+    { "text": "Loved the cultural tour, especially the local markets.", "author": "Jane Smith" },
+    { "text": "A once-in-a-lifetime experience. Everything was perfect!", "author": "Emily Johnson" }
+  ]
+}
