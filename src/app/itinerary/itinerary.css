@@ -21,7 +21,7 @@ h1, h2, h3 {
 }
 
 .operator-name {
-  font-size: clamp(2rem, 5vw, 3.5rem); /* Responsive text sizing */
+  font-size: clamp(2rem, 5vw, 3.5rem);
   letter-spacing: 2px;
   text-transform: uppercase;
   margin-bottom: 10px;
@@ -29,7 +29,7 @@ h1, h2, h3 {
 
 .tagline {
   font-size: 1.2rem;
-  color: #fbbf24; /* Gold accent */
+  color: #fbbf24;
   font-weight: 300;
   letter-spacing: 1px;
 }
@@ -42,16 +42,17 @@ h1, h2, h3 {
   gap: 20px;
   padding: 40px 20px;
   background: #f8fafc;
-  scrollbar-width: none; /* Hide scrollbar Firefox */
+  scrollbar-width: none;
+  scroll-behavior: smooth; /* Critical for smooth auto-slide */
 }
 
 .banner-container::-webkit-scrollbar {
-  display: none; /* Hide scrollbar Chrome/Safari */
+  display: none;
 }
 
 .banner {
   position: relative;
-  flex: 0 0 85%; /* Shows a peek of the next slide */
+  flex: 0 0 85%;
   max-width: 1200px;
   scroll-snap-align: center;
   border-radius: 16px;
@@ -106,7 +107,7 @@ h1, h2, h3 {
 
 .tour-packages {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 30px;
   max-width: 1200px;
   margin: 0 auto;
@@ -134,10 +135,11 @@ h1, h2, h3 {
   padding: 20px;
   font-size: 1.25rem;
   margin: 0;
+  text-align: center;
 }
 
 .package-cost {
-  margin: 20px;
+  margin: 20px 20px 10px;
   background-color: #f0fdf4;
   padding: 12px;
   border-radius: 8px;
@@ -148,26 +150,90 @@ h1, h2, h3 {
   align-items: center;
 }
 
-.itinerary-list {
-  list-style: none;
+/* --- Accordion Styles --- */
+.itinerary-accordion {
   padding: 0 20px 20px;
-  margin: 0;
-  flex-grow: 1; /* Pushes content to fill height */
+  flex-grow: 1;
 }
 
-.itinerary-item {
-  padding: 12px 0;
-  border-bottom: 1px solid #f1f5f9;
+.itinerary-heading {
+  font-size: 0.9rem;
   color: #64748b;
+  margin: 15px 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.accordion-item {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  overflow: hidden;
+  background: white;
+}
+
+.accordion-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  padding: 12px 15px;
+  background-color: #f8fafc;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  user-select: none;
 }
 
-.itinerary-item::before {
-  content: '✓';
-  color: #fbbf24;
-  margin-right: 10px;
+.accordion-header:hover {
+  background-color: #f1f5f9;
+}
+
+.accordion-header.active {
+  background-color: #e0f2fe;
+  border-bottom: 1px solid #cbd5e1;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.day-badge {
+  background-color: #2c3e50;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.day-title {
+  font-weight: 600;
+  color: #334155;
+  font-size: 0.95rem;
+}
+
+.toggle-icon {
   font-weight: bold;
+  color: #fbbf24;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.accordion-content {
+  padding: 15px;
+  background-color: white;
+  color: #475569;
+  font-size: 0.9rem;
+  line-height: 1.8;
+  border-top: 1px solid #e2e8f0;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* --- Testimonials Section --- */
@@ -175,6 +241,12 @@ h1, h2, h3 {
   padding: 80px 20px;
   background: white;
   text-align: center;
+}
+
+.testimonials-title {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin-bottom: 30px;
 }
 
 .testimonials {
@@ -226,6 +298,13 @@ h1, h2, h3 {
   color: #fbbf24;
   margin-bottom: 40px;
   letter-spacing: 2px;
+  text-transform: uppercase;
+  font-size: 1.5rem;
+}
+
+.contact-title {
+  font-size: 2rem;
+  margin-bottom: 40px;
 }
 
 .contact-details {
@@ -265,7 +344,7 @@ h1, h2, h3 {
 /* --- Mobile Breakpoints --- */
 @media (max-width: 768px) {
   .banner {
-    flex: 0 0 95%; /* Make banner almost full width on mobile */
+    flex: 0 0 95%;
   }
   
   .banner-image {
