@@ -2,34 +2,35 @@
   <div class="header-content">
     
     <div class="header-branding">
-      <h1 class="operator-name">{{ operatorName }}</h1>
-      <p class="tagline">Your Trusted Travel Partner</p>
+      <h1 class="operator-name">{{ 'OPERATOR_NAME' | translate }}</h1>
+      <p class="tagline">{{ 'TAGLINE' | translate }}</p>
     </div>
 
-    <div class="header-contact">
-      <a [href]="'https://www.google.com/maps/search/?api=1&query=' + contactInfo.address" target="_blank" class="contact-link address-link">
-        <span class="icon">📍</span> {{ contactInfo.address }}
-      </a>
-      
-      <a [href]="'tel:' + contactInfo.phone" class="contact-link">
-        <span class="icon">📞</span> {{ contactInfo.phone }}
-      </a>
-      
-      <a [href]="'mailto:' + contactInfo.email" class="contact-link">
-        <span class="icon">📧</span> {{ contactInfo.email }}
-      </a>
+    <div class="header-actions">
+      <button class="lang-toggle" (click)="toggleLanguage()">
+        <span class="lang-icon">🌐</span> 
+        {{ 'BTN_LANG' | translate }}
+      </button>
+
+      <div class="header-contact">
+        <a [href]="'https://www.google.com/maps/search/?api=1&query=' + ('CONTACT.ADDRESS' | translate)" target="_blank" class="contact-link address-link">
+          <span class="icon">📍</span> {{ 'CONTACT.ADDRESS' | translate }}
+        </a>
+        <a [href]="'tel:' + contactInfo.phone" class="contact-link">
+          <span class="icon">📞</span> {{ contactInfo.phone }}
+        </a>
+        <a [href]="'mailto:' + contactInfo.email" class="contact-link">
+          <span class="icon">📧</span> {{ contactInfo.email }}
+        </a>
+      </div>
     </div>
 
   </div>
 </header>
 
-<div class="banner-container" 
-     #bannerContainer 
-     (mouseenter)="pauseAutoSlide()" 
-     (mouseleave)="startAutoSlide()">
-     
-  <div class="banner" *ngFor="let banner of banners">
-    <img [src]="banner.image" [alt]="banner.alt" class="banner-image">
+<div class="banner-container" #bannerContainer (mouseenter)="pauseAutoSlide()" (mouseleave)="startAutoSlide()">
+  <div class="banner" *ngFor="let banner of 'BANNERS' | translate">
+    <img [src]="banner.image" [alt]="banner.title" class="banner-image">
     <div class="banner-text">
       <h1>{{ banner.title }}</h1>
       <p>{{ banner.subtitle }}</p>
@@ -38,10 +39,10 @@
 </div>
 
 <div class="itinerary-container">
-  <h1 class="title">Explore Our Tour Packages</h1>
+  <h1 class="title">{{ 'TITLES.EXPLORE' | translate }}</h1>
   
   <div class="tour-packages">
-    <div *ngFor="let package of tourPackages" class="tour-package" [class.is-open]="openPackageName === package.name">
+    <div *ngFor="let package of 'TOUR_PACKAGES' | translate" class="tour-package" [class.is-open]="openPackageName === package.name">
       
       <div class="package-header-main" (click)="togglePackage(package.name)">
         <h2 class="package-name">{{ package.name }}</h2>
@@ -50,12 +51,13 @@
       
       <div class="package-body" *ngIf="openPackageName === package.name">
         <div class="package-cost">
-          <span class="cost-label">Price:</span> 
+          <span class="cost-label">{{ 'LABELS.PRICE' | translate }}</span> 
           <span class="cost-value">{{ package.cost | currency:'INR' }}</span> 
         </div>
 
         <div class="itinerary-accordion">
-          <h3 class="itinerary-heading">Daily Schedule</h3>
+          <h3 class="itinerary-heading">{{ 'TITLES.DAILY_SCHEDULE' | translate }}</h3>
+          
           <div *ngFor="let day of package.itinerary" class="accordion-item">
             <div class="accordion-header" (click)="toggleDay(day)" [class.active]="day.expanded">
               <div class="header-left">
@@ -68,6 +70,7 @@
               <p>{{ day.details }}</p>
             </div>
           </div>
+
         </div>
       </div>
     </div>
@@ -75,9 +78,9 @@
 </div>
 
 <div class="testimonials-container">
-    <h1 class="testimonials-title">What Our Customers Say</h1>
+    <h1 class="testimonials-title">{{ 'TITLES.TESTIMONIALS' | translate }}</h1>
     <div class="testimonials">
-        <div *ngFor="let testimonial of testimonials" class="testimonial">
+        <div *ngFor="let testimonial of 'TESTIMONIALS' | translate" class="testimonial">
             <p class="testimonial-text">"{{ testimonial.text }}"</p>
             <p class="testimonial-author">- {{ testimonial.author }}</p>
         </div>
@@ -85,8 +88,8 @@
 </div>
 
 <div class="contact-container">
-  <h2 class="footer-operator-name">{{ operatorName }}</h2>
+  <h2 class="footer-operator-name">{{ 'OPERATOR_NAME' | translate }}</h2>
   <div class="contact-details">
-    <p>© {{  2024 }} {{ operatorName }}. All rights reserved.</p>
+    <p>© 2024 {{ 'OPERATOR_NAME' | translate }}. {{ 'LABELS.RIGHTS' | translate }}</p>
   </div>
 </div>
