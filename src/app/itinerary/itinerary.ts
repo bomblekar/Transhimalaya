@@ -13,7 +13,7 @@ import { TranslateModule } from '@ngx-translate/core';
 export class ItineraryComponent implements AfterViewInit, OnDestroy {
   operatorName = 'RTS Travels';
   
-  // --- FIX: Track ONLY the name of the currently open package ---
+  // Track ONLY the name of the currently open package
   openPackageName: string | null = null; 
 
   // Banner Auto-Scroll Logic
@@ -88,7 +88,6 @@ export class ItineraryComponent implements AfterViewInit, OnDestroy {
     {
       name: 'Spiti Valley Adventure',
       cost: 32000,
-      // No 'isExpanded' needed here anymore
       itinerary: [
         { 
           day: 'Day 1', 
@@ -182,10 +181,7 @@ export class ItineraryComponent implements AfterViewInit, OnDestroy {
     day.expanded = !day.expanded;
   }
 
-  // --- FIX: Logic to compare Names ---
   togglePackage(pkgName: string) {
-    // If the clicked one is already open, close it (set to null).
-    // Otherwise, set it to the new name.
     if (this.openPackageName === pkgName) {
       this.openPackageName = null;
     } else {

@@ -1,6 +1,26 @@
 <header class="operator-header">
-  <h1 class="operator-name">{{ operatorName }}</h1>
-  <p class="tagline">Your Trusted Travel Partner</p>
+  <div class="header-content">
+    
+    <div class="header-branding">
+      <h1 class="operator-name">{{ operatorName }}</h1>
+      <p class="tagline">Your Trusted Travel Partner</p>
+    </div>
+
+    <div class="header-contact">
+      <a [href]="'https://www.google.com/maps/search/?api=1&query=' + contactInfo.address" target="_blank" class="contact-link address-link">
+        <span class="icon">📍</span> {{ contactInfo.address }}
+      </a>
+      
+      <a [href]="'tel:' + contactInfo.phone" class="contact-link">
+        <span class="icon">📞</span> {{ contactInfo.phone }}
+      </a>
+      
+      <a [href]="'mailto:' + contactInfo.email" class="contact-link">
+        <span class="icon">📧</span> {{ contactInfo.email }}
+      </a>
+    </div>
+
+  </div>
 </header>
 
 <div class="banner-container" 
@@ -29,7 +49,6 @@
       </div>
       
       <div class="package-body" *ngIf="openPackageName === package.name">
-        
         <div class="package-cost">
           <span class="cost-label">Price:</span> 
           <span class="cost-value">{{ package.cost | currency:'INR' }}</span> 
@@ -37,9 +56,7 @@
 
         <div class="itinerary-accordion">
           <h3 class="itinerary-heading">Daily Schedule</h3>
-          
           <div *ngFor="let day of package.itinerary" class="accordion-item">
-            
             <div class="accordion-header" (click)="toggleDay(day)" [class.active]="day.expanded">
               <div class="header-left">
                 <span class="day-badge">{{ day.day }}</span>
@@ -47,15 +64,13 @@
               </div>
               <span class="toggle-icon">{{ day.expanded ? '−' : '+' }}</span>
             </div>
-
             <div class="accordion-content" *ngIf="day.expanded">
               <p>{{ day.details }}</p>
             </div>
-
           </div>
         </div>
       </div>
-      </div>
+    </div>
   </div>
 </div>
 
@@ -71,20 +86,7 @@
 
 <div class="contact-container">
   <h2 class="footer-operator-name">{{ operatorName }}</h2>
-  <h1 class="contact-title">Get in Touch</h1>
-  
   <div class="contact-details">
-    <div class="contact-item">
-      <h3>📍 Visit Us</h3>
-      <p>{{ contactInfo.address }}</p>
-    </div>
-    <div class="contact-item">
-      <h3>📞 Call Us</h3>
-      <p><a [href]="'tel:' + contactInfo.phone">{{ contactInfo.phone }}</a></p>
-    </div>
-    <div class="contact-item">
-      <h3>📧 Email Us</h3>
-      <p><a [href]="'mailto:' + contactInfo.email">{{ contactInfo.email }}</a></p>
-    </div>
+    <p>© {{  2024 }} {{ operatorName }}. All rights reserved.</p>
   </div>
 </div>
