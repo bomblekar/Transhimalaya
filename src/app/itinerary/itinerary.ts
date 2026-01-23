@@ -10,6 +10,7 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrls: ['./itinerary.css'],
 })  
 export class ItineraryComponent {
+  operatorName = 'RTS travels';
   banners = [
     {
       image: 'assets/images/banner1.jpg',
@@ -25,34 +26,32 @@ export class ItineraryComponent {
     }
   ];
 
-  tourPackages = [
-    {
-      name: 'Kinnaur Valley Expedition',
-      itinerary: [
-        'Day 1: Shimla ➝ Sarahan (~170 km). Visit Bhimakali Temple.',
-        'Day 2: Sarahan ➝ Chitkul (~170 km). Visit Last Indian Village & Baspa River.',
-        'Day 3: Chitkul ➝ Kalpa (~90 km). Visit Suicide Point & Roghi Village.',
-        'Day 4: Kalpa Local Sightseeing. Kinnaur Kailash View Point & Monastery.',
-        'Day 5: Kalpa ➝ Shimla (~230 km). Return journey via Rampur.'
-      ]
-    },
-    {
-      name: 'Spiti Valley Circuit (Shimla to Manali)',
-      itinerary: [
-        'Day 1: Shimla ➝ Chitkul. Scenic drive via Sangla Valley & Baspa River.',
-        'Day 2: Chitkul ➝ Kalpa. Views of Kinnaur Kailash & sunset.',
-        'Day 3: Kalpa ➝ Tabo. Visit Nako Lake, Geyu Mummy & Tabo Monastery.',
-        'Day 4: Tabo ➝ Kaza. Visit Dhankar Monastery & Dhankar Lake.',
-        'Day 5: Kaza Sightseeing. Key Monastery, Hikkim (Highest Post Office) & Komic.',
-        'Day 6: Kaza ➝ Losar. Scenic drive through cold desert landscapes.',
-        'Day 7: Losar ➝ Manali. Cross Kunzum Pass & Chandratal route.'
-      ]
-    }
-  ];
+ // Inside your component class:
+
+// 1. Add 'cost' to your existing tourPackages array
+tourPackages = [
+  {
+    name: 'Spiti Valley Adventure',
+    cost: 15000,  // Add this field (number format allows pipes to work)
+    itinerary: ['Day 1: Shimla', 'Day 2: Chitkul', 'Day 3: Kaza']
+  },
+  {
+    name: 'Manali Weekend',
+    cost: 8000,   // Add this field
+    itinerary: ['Day 1: Solang Valley', 'Day 2: Rohtang Pass']
+  }
+];
+
+// 2. Add this new object for the Contact Section
+contactInfo = {
+  address: '123 Mountain View Road, Manali, HP, India',
+  phone: '+91 98160 39602',
+  email: 'negiranjeet662@gmail.com'
+};
 
   testimonials = [
     { text: 'The Ranjeet taxi services was breathtaking! Highly recommend.', author: 'John Doe' },
     { text: 'Loved the cultural tour, especially the local markets.', author: 'Jane Smith' },
     { text: 'A once-in-a-lifetime experience. Everything was perfect!', author: 'Emily Johnson' }
-  ];
+  ]; 
 }
