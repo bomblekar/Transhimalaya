@@ -1,95 +1,217 @@
-<header class="operator-header">
-  <div class="header-content">
-    
-    <div class="header-branding">
-      <h1 class="operator-name">{{ 'OPERATOR_NAME' | translate }}</h1>
-      <p class="tagline">{{ 'TAGLINE' | translate }}</p>
-    </div>
+<div [dir]="isRtl ? 'rtl' : 'ltr'" class="app-wrapper">
 
-    <div class="header-actions">
-      <button class="lang-toggle" (click)="toggleLanguage()">
-        <span class="lang-icon">🌐</span> 
-        {{ 'BTN_LANG' | translate }}
-      </button>
-
-      <div class="header-contact">
-        <a [href]="'https://www.google.com/maps/search/?api=1&query=' + ('CONTACT.ADDRESS' | translate)" target="_blank" class="contact-link address-link">
-          <span class="icon">📍</span> {{ 'CONTACT.ADDRESS' | translate }}
-        </a>
-        <a [href]="'tel:' + contactInfo.phone" class="contact-link">
-          <span class="icon">📞</span> {{ contactInfo.phone }}
-        </a>
-        <a [href]="'mailto:' + contactInfo.email" class="contact-link">
-          <span class="icon">📧</span> {{ contactInfo.email }}
-        </a>
+  <header class="operator-header">
+    <div class="header-content">
+      <div class="header-branding">
+        <h1 class="operator-name">{{ 'OPERATOR_NAME' | translate }}</h1>
+        <p class="tagline">{{ 'TAGLINE' | translate }}</p>
       </div>
-    </div>
-
-  </div>
-</header>
-
-<div class="banner-container" #bannerContainer (mouseenter)="pauseAutoSlide()" (mouseleave)="startAutoSlide()">
-  <div class="banner" *ngFor="let banner of 'BANNERS' | translate">
-    <img [src]="banner.image" [alt]="banner.title" class="banner-image">
-    <div class="banner-text">
-      <h1>{{ banner.title }}</h1>
-      <p>{{ banner.subtitle }}</p>
-    </div>
-  </div>
-</div>
-
-<div class="itinerary-container">
-  <h1 class="title">{{ 'TITLES.EXPLORE' | translate }}</h1>
-  
-  <div class="tour-packages">
-    <div *ngFor="let package of 'TOUR_PACKAGES' | translate" class="tour-package" [class.is-open]="openPackageName === package.name">
-      
-      <div class="package-header-main" (click)="togglePackage(package.name)">
-        <h2 class="package-name">{{ package.name }}</h2>
-        <span class="package-toggle-icon">{{ openPackageName === package.name ? '−' : '+' }}</span>
-      </div>
-      
-      <div class="package-body" *ngIf="openPackageName === package.name">
-        <div class="package-cost">
-          <span class="cost-label">{{ 'LABELS.PRICE' | translate }}</span> 
-          <span class="cost-value">{{ package.cost | currency:'INR' }}</span> 
+      <div class="header-actions">
+        <div class="lang-selector">
+          <span class="lang-icon">🌐</span>
+          <select #langSelect (change)="switchLanguage(langSelect.value)" [value]="translate.currentLang">
+            <option *ngFor="let lang of languages" [value]="lang.code">{{ lang.label }}</option>
+          </select>
         </div>
+        <div class="header-contact">
+          <a [href]="'https://www.google.com/maps/search/?api=1&query=' + ('CONTACT.ADDRESS' | translate)" target="_blank" class="contact-link address-link">
+            <span class="icon">📍</span> {{ 'CONTACT.ADDRESS' | translate }}
+          </a>
+          <a [href]="'tel:' + contactInfo.phone" class="contact-link"><span class="icon">📞</span> {{ contactInfo.phone }}</a>
+        </div>
+      </div>
+    </div>
+  </header>
 
-        <div class="itinerary-accordion">
-          <h3 class="itinerary-heading">{{ 'TITLES.DAILY_SCHEDULE' | translate }}</h3>
-          
-          <div *ngFor="let day of package.itinerary" class="accordion-item">
-            <div class="accordion-header" (click)="toggleDay(day)" [class.active]="day.expanded">
-              <div class="header-left">
-                <span class="day-badge">{{ day.day }}</span>
-                <span class="day-title">{{ day.title }}</span>
-              </div>
-              <span class="toggle-icon">{{ day.expanded ? '−' : '+' }}</span>
+  <div class="banner-container" #bannerContainer (mouseenter)="pauseAutoSlide()" (mouseleave)="startAutoSlide()">
+    <div class="banner" *ngFor="let banner of banners">
+      <img [src]="banner.image" [alt]="banner.title" class="banner-image">
+      <div class="banner-text">
+        <h1>{{ banner.title }}</h1>
+        <p>{{ banner.subtitle }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="itinerary-container">
+    <h1 class="title">{{ 'TITLES.EXPLORE' | translate }}</h1>
+    
+    <div class="tour-packages">
+      <div *ngFor="let package of tourPackages" class="tour-package" [class.is-open]="isPackageOpen(package.name)">
+        <div class="package-header-main" (click)="togglePackage(package.name)">
+          <h2 class="package-name">{{ package.name }}</h2>
+          <span class="package-toggle-icon">{{ isPackageOpen(package.name) ? '−' : '+' }}</span>
+        </div>
+        
+        <div class="package-body" *ngIf="isPackageOpen(package.name)">
+          <div class="booking-controls">
+            <div class="car-selector">
+              <label>Select Vehicle:</label>
+              <select [value]="package.selectedCarId" (change)="updatePrice(package, $any($event.target).value)">
+                <option *ngFor="let car of carOptions" [value]="car.id">
+                  {{ car.name }} {{ car.extraCost > 0 ? '(+' + (car.extraCost | currency:'INR':'symbol':'1.0-0') + ')' : '' }}
+                </option>
+              </select>
             </div>
-            <div class="accordion-content" *ngIf="day.expanded">
-              <p>{{ day.details }}</p>
+            <div class="package-cost">
+              <div class="cost-info">
+                <span class="cost-label">Total Cost:</span> 
+                <span class="cost-value">{{ package.totalCost | currency:'INR' }}</span> 
+              </div>
+              <button class="btn-book-now" (click)="openBooking(package)">Book Now</button>
+            </div>
+          </div>
+          <div class="itinerary-accordion">
+            <h3 class="itinerary-heading">{{ 'TITLES.DAILY_SCHEDULE' | translate }}</h3>
+            <div *ngFor="let day of package.itinerary" class="accordion-item">
+              <div class="accordion-header" (click)="toggleDay(day)" [class.active]="day.expanded">
+                <div class="header-left">
+                  <span class="day-badge">{{ day.day }}</span>
+                  <span class="day-title">{{ day.title }}</span>
+                </div>
+                <span class="toggle-icon">{{ day.expanded ? '−' : '+' }}</span>
+              </div>
+              <div class="accordion-content" *ngIf="day.expanded">
+                <p>{{ day.details }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="testimonials-container">
+      <h1 class="testimonials-title">{{ 'TITLES.TESTIMONIALS' | translate }}</h1>
+      <div class="testimonials">
+          <div *ngFor="let testimonial of testimonials" class="testimonial">
+              <p class="testimonial-text">"{{ testimonial.text }}"</p>
+              <p class="testimonial-author">- {{ testimonial.author }}</p>
+          </div>
+      </div>
+  </div>
+
+  <div class="contact-container">
+    <h2 class="footer-operator-name">{{ 'OPERATOR_NAME' | translate }}</h2>
+    <div class="contact-details">
+      <p>© 2026 {{ 'OPERATOR_NAME' | translate }}. {{ 'LABELS.RIGHTS' | translate }}</p>
+      <button class="btn-link" (click)="openTerms()">Terms & Conditions</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" *ngIf="showBookingModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Confirm Booking</h2>
+        <button class="close-btn" (click)="closeBooking()">×</button>
+      </div>
+      <div class="modal-body">
+        
+        <div class="summary-box">
+          <p><strong>Package:</strong> {{ selectedBookingPackage?.name }}</p>
+          <div class="cost-breakdown">
+             <span>Base: {{ selectedBookingPackage?.baseCost | currency:'INR' }}</span> | 
+             <span>Vehicle Extra: +{{ selectedBookingPackage?.carExtraCost | currency:'INR' }}</span>
+          </div>
+          <p style="font-size: 1.1rem; color: #0f172a; margin-top:5px;"><strong>Total:</strong> {{ selectedBookingPackage?.totalCost | currency:'INR' }}</p>
+        </div>
+        
+        <form (ngSubmit)="submitBooking(bookingForm)" #bookingForm="ngForm">
+          
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input 
+              type="text" 
+              [(ngModel)]="bookingData.name" 
+              name="name" 
+              required 
+              minlength="3" 
+              #nameInput="ngModel"
+              placeholder="Enter your name">
+            
+            <div *ngIf="nameInput.invalid && (nameInput.dirty || nameInput.touched)" class="error-msg">
+              <span *ngIf="nameInput.errors?.['required']">Name is required.</span>
+              <span *ngIf="nameInput.errors?.['minlength']">Name must be at least 3 characters.</span>
             </div>
           </div>
 
-        </div>
+          <div class="form-group">
+            <label>Phone Number *</label>
+            <input 
+              type="tel" 
+              [(ngModel)]="bookingData.phone" 
+              name="phone" 
+              required 
+              pattern="^[0-9]{10}$"
+              #phoneInput="ngModel"
+              placeholder="10-digit mobile number">
+              
+            <div *ngIf="phoneInput.invalid && (phoneInput.dirty || phoneInput.touched)" class="error-msg">
+              <span *ngIf="phoneInput.errors?.['required']">Phone number is required.</span>
+              <span *ngIf="phoneInput.errors?.['pattern']">Please enter a valid 10-digit number.</span>
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group">
+              <label>Travel Date *</label>
+              <input 
+                type="date" 
+                [(ngModel)]="bookingData.date" 
+                name="date" 
+                required 
+                [min]="minDate"
+                #dateInput="ngModel">
+              
+              <div *ngIf="dateInput.invalid && (dateInput.dirty || dateInput.touched)" class="error-msg">
+                Date is required.
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Guests *</label>
+              <input 
+                type="number" 
+                [(ngModel)]="bookingData.guests" 
+                name="guests" 
+                min="1" 
+                max="20"
+                required
+                #guestsInput="ngModel">
+
+              <div *ngIf="guestsInput.invalid && (guestsInput.dirty || guestsInput.touched)" class="error-msg">
+                At least 1 guest required.
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit" [disabled]="bookingForm.invalid">
+            Confirm & Chat on WhatsApp
+          </button>
+
+        </form>
       </div>
     </div>
   </div>
-</div>
 
-<div class="testimonials-container">
-    <h1 class="testimonials-title">{{ 'TITLES.TESTIMONIALS' | translate }}</h1>
-    <div class="testimonials">
-        <div *ngFor="let testimonial of 'TESTIMONIALS' | translate" class="testimonial">
-            <p class="testimonial-text">"{{ testimonial.text }}"</p>
-            <p class="testimonial-author">- {{ testimonial.author }}</p>
-        </div>
+  <div class="modal-overlay" *ngIf="showTermsModal">
+    <div class="modal-content terms-modal">
+      <div class="modal-header">
+        <h2>Terms & Conditions</h2>
+        <button class="close-btn" (click)="closeTerms()">×</button>
+      </div>
+      <div class="modal-body scrollable">
+        <ul>
+          <li><strong>Booking Policy:</strong> 30% advance payment is required.</li>
+          <li><strong>Cancellation:</strong> 0-7 days (No Refund), 7-15 days (50%), 15+ days (80%).</li>
+          <li><strong>Vehicle:</strong> AC will not work in hilly areas.</li>
+          <li><strong>Changes:</strong> Itinerary changes charged extra.</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="closeTerms()">Close</button>
+      </div>
     </div>
-</div>
-
-<div class="contact-container">
-  <h2 class="footer-operator-name">{{ 'OPERATOR_NAME' | translate }}</h2>
-  <div class="contact-details">
-    <p>© 2024 {{ 'OPERATOR_NAME' | translate }}. {{ 'LABELS.RIGHTS' | translate }}</p>
   </div>
+
 </div>
