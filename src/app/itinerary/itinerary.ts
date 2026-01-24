@@ -1,22 +1,31 @@
 import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, NgForm } from '@angular/forms'; // Import NgForm
+import { FormsModule, NgForm } from '@angular/forms'; 
 import { RouterModule } from '@angular/router';
-import { TranslateModule, TranslateService, LangChangeEvent } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TravelDataService } from '../services/travel-data.service'; // Ensure path is correct
 
 @Component({
   selector: 'app-itinerary',
   standalone: true,
   imports: [CommonModule, RouterModule, TranslateModule, FormsModule], 
   templateUrl: './itinerary.html',
-  styleUrls: ['./itinerary.css'],
+  styleUrls: ['./itinerary.css'], // Ensure you have this file
 })
 export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
+  
+  // --- DYNAMIC DATA PROPERTIES ---
+  operatorName: string = '';
+  tagline: string = '';
+  siteTitles: any = {};
+  siteLabels: any = {};
+  siteContact: any = {};
   
   tourPackages: any[] = [];
   banners: any[] = [];
   testimonials: any[] = [];
 
+  // --- STATIC OPTIONS ---
   carOptions = [
     { id: 'sedan', name: 'Sedan (Dzire/Etios)', extraCost: 0 },
     { id: 'ertiga', name: 'Ertiga / SUV', extraCost: 3000 },
@@ -24,26 +33,23 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
     { id: 'tempo', name: 'Tempo Traveller', extraCost: 12000 }
   ];
 
+  // --- MODAL & FORM STATE ---
   showBookingModal = false;
   showTermsModal = false;
   selectedBookingPackage: any = null;
-  
-  // Initialize booking data
   bookingData = { name: '', phone: '', date: '', guests: 2 };
-  
-  // Get today's date for "min" attribute in date picker
   minDate: string = new Date().toISOString().split('T')[0];
 
+  // --- UI STATE ---
   openPackages = new Set<string>();
+  // Fallback contact info in case API fails
   contactInfo = { phone: '+91 98160 39602', email: 'negiranjeet662@gmail.com' };
 
-  languages = [
-    { code: 'en', label: 'English' },
-    { code: 'hi', label: 'हिन्दी (Hindi)' },
-    { code: 'he', label: 'עברית (Hebrew)' }
-  ];
-
-  constructor(public translate: TranslateService) {
+  constructor(
+    public translate: TranslateService,
+    private travelService: TravelDataService
+  ) {
+    // Keep translation service for RTL support if needed
     this.translate.addLangs(['en', 'hi', 'he']);
     this.translate.setDefaultLang('en');
     this.translate.use('en');
@@ -51,36 +57,58 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.loadData();
+    // Reload if language changes (optional, if you plan to support multi-lang API later)
     this.translate.onLangChange.subscribe(() => this.loadData());
   }
 
   loadData() {
-    this.translate.get('TOUR_PACKAGES').subscribe(data => {
-      if (data && Array.isArray(data)) {
-        this.tourPackages = data.map((pkg: any) => {
-          let rawCost = pkg.cost;
-          let baseCost = Number(String(rawCost).replace(/[^0-9.]/g, ''));
-          
-          if (!baseCost || isNaN(baseCost)) {
-            console.warn(`Missing cost for ${pkg.name}, defaulting to 0`);
-            baseCost = 0; 
-          }
+    this.travelService.getAllData().subscribe({
+      next: (data: any) => {
+        // 1. General Config
+        this.operatorName = data.OPERATOR_NAME || 'RTS Travels';
+        this.tagline = data.TAGLINE || '';
+        this.siteTitles = data.TITLES || { EXPLORE: 'Explore', TESTIMONIALS: 'Testimonials', DAILY_SCHEDULE: 'Itinerary', CONTACT: 'Contact' };
+        this.siteLabels = data.LABELS || { PRICE: 'Price:', RIGHTS: 'All rights reserved.' };
+        this.siteContact = data.CONTACT || { ADDRESS: '' };
 
-          return {
-            ...pkg,
-            baseCost: baseCost,     
-            carExtraCost: 0,        
-            totalCost: baseCost,    
-            selectedCarId: 'sedan'  
-          };
-        });
+        // 2. Banners
+        if (data.BANNERS) {
+          this.banners = data.BANNERS;
+        }
+
+        // 3. Testimonials
+        if (data.TESTIMONIALS) {
+          this.testimonials = data.TESTIMONIALS;
+        }
+
+        // 4. Tour Packages & Cost Calculation Logic
+        if (data.TOUR_PACKAGES && Array.isArray(data.TOUR_PACKAGES)) {
+          this.tourPackages = data.TOUR_PACKAGES.map((pkg: any) => {
+            let rawCost = pkg.cost;
+            // Clean cost string to number
+            let baseCost = Number(String(rawCost).replace(/[^0-9.]/g, ''));
+            
+            if (!baseCost || isNaN(baseCost)) {
+              baseCost = 0; 
+            }
+
+            return {
+              ...pkg,
+              baseCost: baseCost,     
+              carExtraCost: 0,        
+              totalCost: baseCost,    
+              selectedCarId: 'sedan'  
+            };
+          });
+        }
+      },
+      error: (err) => {
+        console.error('Failed to load API data', err);
       }
     });
-
-    this.translate.get('BANNERS').subscribe(data => this.banners = data);
-    this.translate.get('TESTIMONIALS').subscribe(data => this.testimonials = data);
   }
 
+  // --- PRICING LOGIC ---
   updatePrice(pkg: any, carId: string) {
     const selectedCar = this.carOptions.find(c => c.id === carId);
     if (selectedCar) {
@@ -90,10 +118,10 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  // --- BOOKING FORM ---
   openBooking(pkg: any) { 
     this.selectedBookingPackage = pkg; 
     this.showBookingModal = true; 
-    // Reset form data on open
     this.bookingData = { name: '', phone: '', date: '', guests: 2 };
   }
 
@@ -102,10 +130,8 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
     this.selectedBookingPackage = null; 
   }
 
-  // Updated Submit to handle Form Validation
   submitBooking(form: NgForm) {
     if (form.invalid) {
-      // Mark all controls as touched to trigger error messages
       Object.keys(form.controls).forEach(key => {
         form.controls[key].markAsTouched();
       });
@@ -126,14 +152,17 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
     this.closeBooking();
   }
 
+  // --- UTILS ---
   openTerms() { this.showTermsModal = true; }
   closeTerms() { this.showTermsModal = false; }
+  
   get isRtl(): boolean { return this.translate.currentLang === 'he'; }
-  switchLanguage(langCode: string) { this.translate.use(langCode); }
+  
   togglePackage(pkgName: string) { this.openPackages.has(pkgName) ? this.openPackages.delete(pkgName) : this.openPackages.add(pkgName); }
   isPackageOpen(pkgName: string): boolean { return this.openPackages.has(pkgName); }
   toggleDay(day: any) { day.expanded = !day.expanded; }
   
+  // --- CAROUSEL LOGIC ---
   @ViewChild('bannerContainer') bannerContainer!: ElementRef;
   slideInterval: any;
   ngAfterViewInit() { this.startAutoSlide(); }

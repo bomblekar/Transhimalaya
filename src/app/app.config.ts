@@ -1,10 +1,10 @@
 import { ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { HttpClient, provideHttpClient } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { routes } from './app.routes';
-
+import { authInterceptor } from './core/auth.interceptor';
 // --- CUSTOM LOADER (Bypasses library version issues) ---
 export class CustomLoader implements TranslateLoader {
   constructor(private http: HttpClient) {}
@@ -23,8 +23,9 @@ export function HttpLoaderFactory(http: HttpClient) {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideHttpClient(), // Critical: Must be provided
-    
+    provideHttpClient(
+      withInterceptors([authInterceptor]) 
+    ),
     // Setup Translate Module with our Custom Loader
     importProvidersFrom(
       TranslateModule.forRoot({

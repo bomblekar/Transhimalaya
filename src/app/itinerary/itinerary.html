@@ -3,19 +3,13 @@
   <header class="operator-header">
     <div class="header-content">
       <div class="header-branding">
-        <h1 class="operator-name">{{ 'OPERATOR_NAME' | translate }}</h1>
-        <p class="tagline">{{ 'TAGLINE' | translate }}</p>
+        <h1 class="operator-name">{{ operatorName }}</h1>
+        <p class="tagline">{{ tagline }}</p>
       </div>
       <div class="header-actions">
-        <div class="lang-selector">
-          <span class="lang-icon">🌐</span>
-          <select #langSelect (change)="switchLanguage(langSelect.value)" [value]="translate.currentLang">
-            <option *ngFor="let lang of languages" [value]="lang.code">{{ lang.label }}</option>
-          </select>
-        </div>
         <div class="header-contact">
-          <a [href]="'https://www.google.com/maps/search/?api=1&query=' + ('CONTACT.ADDRESS' | translate)" target="_blank" class="contact-link address-link">
-            <span class="icon">📍</span> {{ 'CONTACT.ADDRESS' | translate }}
+          <a [href]="'https://www.google.com/maps/search/?api=1&query=' + siteContact.ADDRESS" target="_blank" class="contact-link address-link">
+            <span class="icon">📍</span> {{ siteContact.ADDRESS }}
           </a>
           <a [href]="'tel:' + contactInfo.phone" class="contact-link"><span class="icon">📞</span> {{ contactInfo.phone }}</a>
         </div>
@@ -34,7 +28,7 @@
   </div>
 
   <div class="itinerary-container">
-    <h1 class="title">{{ 'TITLES.EXPLORE' | translate }}</h1>
+    <h1 class="title">{{ siteTitles.EXPLORE }}</h1>
     
     <div class="tour-packages">
       <div *ngFor="let package of tourPackages" class="tour-package" [class.is-open]="isPackageOpen(package.name)">
@@ -55,14 +49,15 @@
             </div>
             <div class="package-cost">
               <div class="cost-info">
-                <span class="cost-label">Total Cost:</span> 
+                <span class="cost-label">{{ siteLabels.PRICE || 'Price:' }}</span> 
                 <span class="cost-value">{{ package.totalCost | currency:'INR' }}</span> 
               </div>
               <button class="btn-book-now" (click)="openBooking(package)">Book Now</button>
             </div>
           </div>
           <div class="itinerary-accordion">
-            <h3 class="itinerary-heading">{{ 'TITLES.DAILY_SCHEDULE' | translate }}</h3>
+            <h3 class="itinerary-heading">{{ siteTitles.DAILY_SCHEDULE }}</h3>
+            
             <div *ngFor="let day of package.itinerary" class="accordion-item">
               <div class="accordion-header" (click)="toggleDay(day)" [class.active]="day.expanded">
                 <div class="header-left">
@@ -82,7 +77,7 @@
   </div>
 
   <div class="testimonials-container">
-      <h1 class="testimonials-title">{{ 'TITLES.TESTIMONIALS' | translate }}</h1>
+      <h1 class="testimonials-title">{{ siteTitles.TESTIMONIALS }}</h1>
       <div class="testimonials">
           <div *ngFor="let testimonial of testimonials" class="testimonial">
               <p class="testimonial-text">"{{ testimonial.text }}"</p>
@@ -92,9 +87,9 @@
   </div>
 
   <div class="contact-container">
-    <h2 class="footer-operator-name">{{ 'OPERATOR_NAME' | translate }}</h2>
+    <h2 class="footer-operator-name">{{ operatorName }}</h2>
     <div class="contact-details">
-      <p>© 2026 {{ 'OPERATOR_NAME' | translate }}. {{ 'LABELS.RIGHTS' | translate }}</p>
+      <p>© 2026 {{ operatorName }}. {{ siteLabels.RIGHTS }}</p>
       <button class="btn-link" (click)="openTerms()">Terms & Conditions</button>
     </div>
   </div>

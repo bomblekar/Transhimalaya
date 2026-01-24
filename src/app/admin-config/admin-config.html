@@ -1,0 +1,82 @@
+<div class="config-container">
+    <h2>Site Settings</h2>
+  
+    <div *ngIf="isLoading" class="loading">Loading settings...</div>
+  
+    <div *ngIf="!isLoading" class="form-layout">
+      
+      <div class="card">
+        <h3>General Info</h3>
+        
+        <div class="form-group">
+          <label>Operator Name</label>
+          <input [(ngModel)]="config.OPERATOR_NAME" class="form-control" placeholder="e.g. RTS Travels">
+        </div>
+  
+        <div class="form-group">
+          <label>Tagline</label>
+          <input [(ngModel)]="config.TAGLINE" class="form-control" placeholder="e.g. Your Trusted Travel Partner">
+        </div>
+  
+        <div class="form-group">
+          <label>Language Button Text</label>
+          <input [(ngModel)]="config.BTN_LANG" class="form-control" placeholder="e.g. Read in Hindi">
+        </div>
+      </div>
+  
+      <div class="card">
+        <h3>Contact Details</h3>
+        <div class="form-group">
+          <label>Address</label>
+          <textarea [(ngModel)]="config.CONTACT.ADDRESS" rows="3" class="form-control"></textarea>
+        </div>
+      </div>
+  
+      <div class="card">
+        <h3>Section Titles (Frontend)</h3>
+        
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Explore Section Title</label>
+            <input [(ngModel)]="config.TITLES.EXPLORE" class="form-control">
+          </div>
+  
+          <div class="form-group">
+            <label>Testimonials Title</label>
+            <input [(ngModel)]="config.TITLES.TESTIMONIALS" class="form-control">
+          </div>
+  
+          <div class="form-group">
+            <label>Schedule Title</label>
+            <input [(ngModel)]="config.TITLES.DAILY_SCHEDULE" class="form-control">
+          </div>
+  
+          <div class="form-group">
+            <label>Contact Title</label>
+            <input [(ngModel)]="config.TITLES.CONTACT" class="form-control">
+          </div>
+        </div>
+      </div>
+  
+      <div class="card">
+        <h3>Misc Labels</h3>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Price Label</label>
+            <input [(ngModel)]="config.LABELS.PRICE" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Footer Rights</label>
+            <input [(ngModel)]="config.LABELS.RIGHTS" class="form-control">
+          </div>
+        </div>
+      </div>
+  
+      <div class="actions">
+        <button (click)="saveConfig()" [disabled]="isSaving" class="btn-save">
+          {{ isSaving ? 'Saving...' : 'Save Changes' }}
+        </button>
+      </div>
+  
+    </div>
+  </div>
