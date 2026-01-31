@@ -1,26 +1,28 @@
 import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, NgForm } from '@angular/forms'; 
+import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TravelDataService } from '../services/travel-data.service'; // Ensure path is correct
+import { Footer } from '../footer/footer';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-itinerary',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslateModule, FormsModule], 
+  imports: [CommonModule, RouterModule, TranslateModule, FormsModule, Footer],
   templateUrl: './itinerary.html',
   styleUrls: ['./itinerary.css'], // Ensure you have this file
 })
 export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
-  
+
   // --- DYNAMIC DATA PROPERTIES ---
   operatorName: string = '';
   tagline: string = '';
   siteTitles: any = {};
   siteLabels: any = {};
   siteContact: any = {};
-  
+
   tourPackages: any[] = [];
   banners: any[] = [];
   testimonials: any[] = [];
@@ -47,7 +49,7 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     public translate: TranslateService,
-    private travelService: TravelDataService
+    private travelService: TravelDataService,private sanitizer: DomSanitizer
   ) {
     // Keep translation service for RTL support if needed
     this.translate.addLangs(['en', 'hi', 'he']);
@@ -67,14 +69,10 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
         // 1. General Config
         this.operatorName = data.OPERATOR_NAME || 'RTS Travels';
         this.tagline = data.TAGLINE || '';
-        this.siteTitles = data.TITLES || { EXPLORE: 'Explore', TESTIMONIALS: 'Testimonials', DAILY_SCHEDULE: 'Itinerary', CONTACT: 'Contact' };
+        this.siteTitles = data.TITLES || { EXPLORE: 'Explore Packages', TESTIMONIALS: 'Testimonials', DAILY_SCHEDULE: 'Itinerary', CONTACT: 'Contact' };
         this.siteLabels = data.LABELS || { PRICE: 'Price:', RIGHTS: 'All rights reserved.' };
-        this.siteContact = data.CONTACT || { ADDRESS: '' };
-
-        // 2. Banners
-        if (data.BANNERS) {
-          this.banners = data.BANNERS;
-        }
+        this.siteContact = data.CONTACT || { ADDRESS: 'Reckong Peo, Jangal Mehfuza Mehduda C-, Himachal Pradesh 172107' };
+ 
 
         // 3. Testimonials
         if (data.TESTIMONIALS) {
@@ -87,17 +85,17 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
             let rawCost = pkg.cost;
             // Clean cost string to number
             let baseCost = Number(String(rawCost).replace(/[^0-9.]/g, ''));
-            
+
             if (!baseCost || isNaN(baseCost)) {
-              baseCost = 0; 
+              baseCost = 0;
             }
 
             return {
               ...pkg,
-              baseCost: baseCost,     
-              carExtraCost: 0,        
-              totalCost: baseCost,    
-              selectedCarId: 'sedan'  
+              baseCost: baseCost,
+              carExtraCost: 0,
+              totalCost: baseCost,
+              selectedCarId: 'sedan'
             };
           });
         }
@@ -106,6 +104,19 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
         console.error('Failed to load API data', err);
       }
     });
+    //getbanner
+    this.travelService.getBanners().subscribe({
+    next: (data: any) => {
+      console.log('Raw banner data from API:', data);
+      // Logic: If BANNERS comes as an array of documents (your provided JSON)
+      if (data && data.length > 0) {
+        // Access the first document's BANNERS property
+        this.banners = data[0].BANNERS; 
+      }
+      
+      console.log('Successfully mapped banner items:', this.banners);
+    }
+  });
   }
 
   // --- PRICING LOGIC ---
@@ -119,15 +130,15 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   // --- BOOKING FORM ---
-  openBooking(pkg: any) { 
-    this.selectedBookingPackage = pkg; 
-    this.showBookingModal = true; 
+  openBooking(pkg: any) {
+    this.selectedBookingPackage = pkg;
+    this.showBookingModal = true;
     this.bookingData = { name: '', phone: '', date: '', guests: 2 };
   }
 
-  closeBooking() { 
-    this.showBookingModal = false; 
-    this.selectedBookingPackage = null; 
+  closeBooking() {
+    this.showBookingModal = false;
+    this.selectedBookingPackage = null;
   }
 
   submitBooking(form: NgForm) {
@@ -155,13 +166,13 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
   // --- UTILS ---
   openTerms() { this.showTermsModal = true; }
   closeTerms() { this.showTermsModal = false; }
-  
+
   get isRtl(): boolean { return this.translate.currentLang === 'he'; }
-  
+
   togglePackage(pkgName: string) { this.openPackages.has(pkgName) ? this.openPackages.delete(pkgName) : this.openPackages.add(pkgName); }
   isPackageOpen(pkgName: string): boolean { return this.openPackages.has(pkgName); }
   toggleDay(day: any) { day.expanded = !day.expanded; }
-  
+
   // --- CAROUSEL LOGIC ---
   @ViewChild('bannerContainer') bannerContainer!: ElementRef;
   slideInterval: any;
@@ -173,8 +184,22 @@ export class ItineraryComponent implements OnInit, AfterViewInit, OnDestroy {
   scrollToNext() {
     if (!this.bannerContainer) return;
     const container = this.bannerContainer.nativeElement;
-    const scrollAmount = container.offsetWidth * 0.85; 
-    if (container.scrollLeft + container.offsetWidth >= container.scrollWidth - 10) { container.scrollTo({ left: 0, behavior: 'smooth' }); } 
+    const scrollAmount = container.offsetWidth * 0.85;
+    if (container.scrollLeft + container.offsetWidth >= container.scrollWidth - 10) { container.scrollTo({ left: 0, behavior: 'smooth' }); }
     else { container.scrollTo({ left: container.scrollLeft + scrollAmount, behavior: 'smooth' }); }
+  }
+
+  // getFullUrl(path: string): string {
+  //   if (!path) return 'assets/images/placeholder.jpg';
+  //   return path.startsWith('http') ? path : `http://localhost:3000${path}`;
+  // }
+
+  getFullUrl(path: string): SafeUrl {
+    if (!path) return 'assets/images/placeholder.jpg';
+    
+    const fullPath = path.startsWith('http') ? path : `http://localhost:3000${path}`;
+    
+    // Bypass security for this specific local URL
+    return this.sanitizer.bypassSecurityTrustUrl(fullPath);
   }
 }

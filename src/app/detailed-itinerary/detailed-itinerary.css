@@ -1,0 +1,169 @@
+:host {
+  --primary: #0f172a;
+  --accent: #06b6d4;
+  --text-main: #334155;
+  --white: #ffffff;
+}
+
+.detail-wrapper {
+  background: var(--white);
+  color: var(--text-main);
+}
+
+/* --- HERO SLIDESHOW --- */
+/* Ensure the header has a defined height and relative positioning */
+.hero-header {
+  height: 70vh; 
+  position: relative;
+  overflow: hidden;
+  background-color: #000; /* Black background to avoid white flashes */
+}
+
+/* The container must fill the header */
+.slideshow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* Keep it behind the text */
+}
+
+/* Each slide MUST be absolute to stack on top of each other */
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0; /* Hidden by default */
+  transition: opacity 1.5s ease-in-out; /* The cross-fade effect */
+}
+
+/* This is what makes the image appear when Angular updates the index */
+.slide.active {
+  opacity: 1;
+} 
+
+.hero-overlay {
+  position: relative;
+  z-index: 10;
+  height: 100%;
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.9), transparent 60%);
+  display: flex;
+  flex-direction: column;
+  padding: 30px 8%;
+}
+
+/* --- BACK BUTTON --- */
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+  background: rgba(159, 12, 12, 0.1);
+  padding: 10px 20px;
+  border-radius: 50px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background: white;
+  color: var(--primary);
+}
+
+.hero-content {
+  margin-top: auto;
+  color: white;
+  padding-bottom: 20px;
+}
+
+.badge {
+  background: var(--accent);
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  margin: 10px 0;
+  line-height: 1.1;
+}
+
+/* --- TIMELINE --- */
+.itinerary-section {
+  max-width: 900px;
+  margin: -60px auto 100px;
+  position: relative;
+  z-index: 20;
+  padding: 0 20px;
+}
+
+.timeline-item {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 25px;
+}
+
+.timeline-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.day-dot {
+  width: 45px;
+  height: 45px;
+  background: var(--accent);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  box-shadow: 0 5px 15px rgba(6, 182, 212, 0.3);
+}
+
+.connecting-line {
+  width: 3px;
+  background: #e2e8f0;
+  flex-grow: 1;
+  margin: 10px 0;
+}
+
+.timeline-card {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.06);
+  flex: 1;
+  border: 1px solid #f1f5f9;
+}
+
+.tags span {
+  background: #f1f5f9;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  margin-right: 10px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+@media (max-width: 768px) {
+  .hero-header { height: 50vh; }
+  .itinerary-section { margin-top: 20px; }
+  .timeline-item { gap: 15px; }
+}

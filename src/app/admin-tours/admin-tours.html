@@ -1,69 +1,76 @@
 <div class="admin-container">
+  <div class="admin-header">
+    <h1>Admin Dashboard</h1>
+    <button (click)="logout()" class="btn-logout">Logout ➜</button>
+  </div>
 
-    <div class="admin-header">
-      <h1>Admin Dashboard</h1>
-      <button (click)="logout()" class="btn-logout">Logout ➜</button>
-    </div>
-    
-    <div class="content-wrapper">
-      <div class="form-section">
-        <h2>{{ isEditing ? 'Edit Tour' : 'Add New Tour' }}</h2>
-        
-        <div class="form-group">
-          <label>Package Name <span class="required">*</span></label>
-          <input type="text" [(ngModel)]="currentTour.name" placeholder="e.g. Spiti Winter Special" 
-                 class="form-control" [class.input-error]="submitted && !currentTour.name">
-          <small *ngIf="submitted && !currentTour.name" class="error-text">Package Name is required.</small>
-        </div>
-    
-        <div class="form-group">
-          <label>Cost (₹) <span class="required">*</span></label>
-          <input type="text" [(ngModel)]="currentTour.cost" placeholder="e.g. 15000" 
-                 class="form-control" [class.input-error]="submitted && !currentTour.cost">
-          <small *ngIf="submitted && !currentTour.cost" class="error-text">Cost is required.</small>
-        </div>
-    
-        <div class="itinerary-manager" [class.border-error]="submitted && currentTour.itinerary.length === 0">
-          <h3>Itinerary Days</h3>
-          <small *ngIf="submitted && currentTour.itinerary.length === 0" class="error-text">At least one day is required.</small>
-          
-          <div *ngFor="let item of currentTour.itinerary; let i = index" class="day-row">
-            <div class="day-header">
-              <input [(ngModel)]="item.day" class="day-input" placeholder="Day X">
-              <button (click)="removeDay(i)" class="btn-remove" title="Remove Day">✖</button>
-            </div>
-            <input [(ngModel)]="item.title" placeholder="Title" class="form-control mb-1">
-            <textarea [(ngModel)]="item.details" placeholder="Details..." rows="2" class="form-control"></textarea>
-          </div>
-    
-          <button (click)="addDay()" class="btn-secondary small mt-2">+ Add Day</button>
-        </div>
-    
-        <div class="actions">
-          <button (click)="saveTour()" class="btn-primary">
-            {{ isEditing ? 'Update Tour' : 'Save Tour' }}
-          </button>
-          <button *ngIf="isEditing" (click)="resetForm()" class="btn-cancel">Cancel</button>
-        </div>
+  <div class="content-wrapper">
+    <div class="form-section">
+      <h2>{{ isEditing ? 'Edit Tour' : 'Add New Tour' }}</h2>
+
+      <div class="form-group">
+        <label>Package Name <span class="required">*</span></label>
+        <input type="text" [(ngModel)]="currentTour.name" class="form-control"
+          [class.input-error]="submitted && !currentTour.name">
       </div>
-    
-      <div class="list-section">
-        <h2>All Packages</h2>
-        <div *ngIf="isLoading" class="loading-state">Loading tours...</div>
-        <div *ngIf="!isLoading && tours.length === 0" class="empty-state">No tours found.</div>
-    
-        <div class="tour-card" *ngFor="let tour of tours">
-          <div class="tour-info">
-            <h3>{{ tour.name }}</h3>
-            <p class="price">₹ {{ tour.cost }}</p>
-            <p class="days">{{ tour.itinerary.length }} Days</p>
-          </div>
-          <div class="tour-actions">
-            <button (click)="editTour(tour)" class="btn-edit">Edit</button>
-            <button (click)="deleteTour(tour)" class="btn-delete">Delete</button>
+
+      <div class="form-group">
+        <label>Cost (₹) <span class="required">*</span></label>
+        <input type="text" [(ngModel)]="currentTour.cost" class="form-control"
+          [class.input-error]="submitted && !currentTour.cost">
+      </div>
+
+      <div class="form-group">
+        <label>Tour Gallery (Select Multiple) <span class="required">*</span></label>
+        <input type="file" multiple (change)="onMultipleFilesSelected($event)" accept="image/*"
+          class="form-control mb-1" [class.input-error]="submitted && currentTour.images.length === 0">
+
+        <small *ngIf="submitted && currentTour.images.length === 0" class="error-text">
+          At least one image is required for the tour package.
+        </small>
+
+        <div class="gallery-preview mt-2" *ngIf="currentTour.images.length > 0">
+          <div *ngFor="let img of currentTour.images; let i = index" class="gallery-item">
+            <img [src]="img" class="img-preview-thumb">
+            <button type="button" (click)="removeImage(i)" class="btn-remove-thumb">✖</button>
           </div>
         </div>
       </div>
+
+      <div class="itinerary-manager" [class.border-error]="submitted && currentTour.itinerary.length === 0">
+        <h3>Itinerary Days</h3>
+
+        <div *ngFor="let item of currentTour.itinerary; let i = index" class="day-row">
+          <div class="day-header">
+            <input [(ngModel)]="item.day" class="day-input">
+            <button (click)="removeDay(i)" class="btn-remove">✖</button>
+          </div>
+          <input [(ngModel)]="item.title" placeholder="Sightseeing Title" class="form-control mb-1">
+          <textarea [(ngModel)]="item.details" placeholder="Details..." rows="2" class="form-control"></textarea>
+        </div>
+
+        <button (click)="addDay()" class="btn-secondary small mt-2">+ Add Day</button>
+      </div>
+
+      <div class="actions">
+        <button (click)="saveTour()" class="btn-primary">{{ isEditing ? 'Update Tour' : 'Save Tour' }}</button>
+        <button *ngIf="isEditing" (click)="resetForm()" class="btn-cancel">Cancel</button>
+      </div>
     </div>
-  
-  </div>    
+
+    <div class="list-section">
+      <h2>All Packages</h2>
+      <div *ngIf="isLoading" class="loading-state">Loading tours...</div>
+      <div class="tour-card" *ngFor="let tour of tours">
+        <div class="tour-info">
+          <h3>{{ tour.name }}</h3>
+          <p class="price">₹ {{ tour.cost }}</p>
+        </div>
+        <div class="tour-actions">
+          <button (click)="editTour(tour)" class="btn-edit">Edit</button>
+          <button (click)="deleteTour(tour)" class="btn-delete">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

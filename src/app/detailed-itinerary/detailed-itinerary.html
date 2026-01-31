@@ -1,4 +1,55 @@
-<div class="detailed-itinerary-container">
-    <h1>Detailed Itinerary for {{ packageName }}</h1>
-    <p>Here you can display the day-wise itinerary and pricing details for the selected package.</p>
-  </div>
+<div class="detail-wrapper" *ngIf="tour">
+  <header class="hero-header">
+    <div class="slideshow" *ngIf="tour?.images?.length > 0">
+      <div *ngFor="let imgPath of tour.images; let i = index" class="slide" [class.active]="i === currentBannerIndex"
+        [style.backgroundImage]="'url(' + getFullUrl(imgPath) + ')'">
+      </div>
+    </div>
+
+    <div class="hero-overlay">
+      <nav class="top-nav">
+        <a routerLink="/" class="back-btn">
+          <span class="arrow">←</span> BACK TO ALL TOURS
+        </a>
+      </nav>
+
+      <div class="hero-content">
+        <div class="badge">TRANS-HIMALAYAN EXPEDITION</div>
+        <h1>{{ tour.name }}</h1>
+        <div class="quick-stats">
+          <span>🕒 {{ tour.itinerary.length }} Days</span>
+          <span>💰 From ₹{{ tour.cost }}</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="itinerary-section">
+    <div class="section-title">
+      <h2>Your Journey</h2>
+      <div class="underline"></div>
+    </div>
+
+    <div class="timeline">
+      <div *ngFor="let step of tour.itinerary; let i = index" class="timeline-item">
+        <div class="timeline-indicator">
+          <div class="day-dot">{{ i + 1 }}</div>
+          <div class="connecting-line" *ngIf="i !== tour.itinerary.length - 1"></div>
+        </div>
+
+        <div class="timeline-card">
+          <div class="card-header">
+            <span class="day-label">DAY {{ step.day }}</span>
+            <h3>{{ step.title }}</h3>
+          </div>
+          <p class="details">{{ step.details }}</p>
+          <div class="tags">
+            <span>🏔️ Viewpoint</span>
+            <span>📸 Photography</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <app-footer></app-footer>
+</div>

@@ -1,10 +1,11 @@
+// admin-tours.ts
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; 
-import { Router } from '@angular/router'; // <--- Import Router
-import { TravelDataService } from '../services/travel-data.service'; 
-import { Auth } from '../services/auth'; // <--- Import Auth Service
-import { TourPackage } from '../models/travel.model'; 
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { TravelDataService } from '../services/travel-data.service';
+import { Auth } from '../services/auth';
+import { TourPackage } from '../models/travel.model';
 
 @Component({
   selector: 'app-admin-tours',
@@ -14,88 +15,94 @@ import { TourPackage } from '../models/travel.model';
   styleUrls: ['./admin-tours.css']
 })
 export class AdminToursComponent implements OnInit {
-
   tours: TourPackage[] = [];
-  
+  isEditing = false;
+  isLoading = false;
+  submitted = false;
+
   currentTour: TourPackage = {
     name: '',
     cost: '',
+    images: [], // Initialized for multiple images
     itinerary: []
   };
 
-  isEditing = false;
-  isLoading = false;
-  submitted = false; 
-
   constructor(
-    private travelService: TravelDataService, 
-    private authService: Auth, // <--- Inject Auth Service
-    private router: Router,           // <--- Inject Router
+    private travelService: TravelDataService,
+    private authService: Auth,
+    private router: Router,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
-  ngOnInit() {
-    this.loadTours();
-  }
-
-  // --- LOGOUT FUNCTION ---
+  ngOnInit() { this.loadTours(); }
   logout() {
     this.authService.logout(); // Clears token
     this.router.navigate(['/login']); // Redirects to login
   }
-
-  // --- 1. LOAD ---
   loadTours() {
     this.isLoading = true;
     this.travelService.getTours().subscribe({
       next: (data: any) => {
         this.tours = data.TOUR_PACKAGES || data;
-        if (!this.tours) this.tours = [];
         this.isLoading = false;
-        this.cdr.detectChanges(); 
+        this.cdr.detectChanges();
       },
-      error: (err) => {
-        console.error("Error loading tours", err);
-        this.isLoading = false;
-      }
+      error: () => this.isLoading = false
     });
   }
 
-  // --- 2. SUBMIT ---
+  // --- SAVE WITH VALIDATION ---
   saveTour() {
-    this.submitted = true; 
-    const isNameValid = !!this.currentTour.name;
-    const isCostValid = !!this.currentTour.cost;
-    const isItineraryValid = this.currentTour.itinerary.length > 0;
+    this.submitted = true;
 
-    if (!isNameValid || !isCostValid || !isItineraryValid) return; 
+    // VALIDATION: Ensure name, cost, itinerary, and at least one image exist
+    const isImageUploaded = this.currentTour.images && this.currentTour.images.length > 0;
 
-    if (this.isEditing) {
-      if (this.currentTour._id) {
-        this.travelService.updateTour(this.currentTour._id, this.currentTour).subscribe({
-          next: () => {
-            alert('Tour updated successfully');
-            this.resetForm();
-            this.loadTours();
-          },
-          error: () => alert('Failed to update tour')
-        });
-      } else {
-        alert("Error: Cannot update tour without ID");
+    if (!this.currentTour.name ||
+      !this.currentTour.cost ||
+      this.currentTour.itinerary.length === 0 ||
+      !isImageUploaded) {
+      return; // Stop if at least one image is missing
+    }
+
+    const request = this.isEditing && this.currentTour._id
+      ? this.travelService.updateTour(this.currentTour._id, this.currentTour)
+      : this.travelService.addTour(this.currentTour);
+
+    request.subscribe({
+      next: () => {
+        alert(this.isEditing ? 'Tour updated successfully' : 'Tour added successfully');
+        this.resetForm();
+        this.loadTours();
+      },
+      error: () => alert('Operation failed')
+    });
+  }
+
+  // --- MULTIPLE IMAGE UPLOAD ---
+  // admin-tours.ts
+  onMultipleFilesSelected(event: any) {
+    const files: FileList = event.target.files;
+    if (files && files.length > 0) {
+      const formData = new FormData();
+      formData.append('name', this.currentTour.name); // Still needed for the folder name
+
+      for (let i = 0; i < files.length; i++) {
+        formData.append('images', files[i]); // Just append the files
       }
-    } else {
-      this.travelService.addTour(this.currentTour).subscribe({
-        next: () => {
-          alert('Tour added successfully');
-          this.resetForm();
-          this.loadTours();
-        },
-        error: () => alert('Failed to add tour')
+
+      this.travelService.uploadMultipleImages(formData).subscribe({
+        next: (res: any) => {
+          // Backend returns the full URLs with 'banner-X' names
+          this.currentTour.images = [...this.currentTour.images, ...res.urls];
+        }
       });
     }
   }
+  removeImage(index: number) {
+    this.currentTour.images.splice(index, 1);
+  }
 
-  // --- 3. DELETE ---
   deleteTour(tour: TourPackage) {
     if (!tour._id) return;
     if (confirm(`Are you sure you want to delete "${tour.name}"?`)) {
@@ -106,19 +113,23 @@ export class AdminToursComponent implements OnInit {
     }
   }
 
-  // --- 4. PREPARE EDIT ---
   editTour(tour: TourPackage) {
     this.isEditing = true;
-    this.submitted = false; 
-    this.currentTour = JSON.parse(JSON.stringify(tour)); 
+    this.submitted = false;
+    this.currentTour = JSON.parse(JSON.stringify(tour));
   }
 
-  // --- 5. ITINERARY ---
   addDay() {
     const nextDayNum = this.currentTour.itinerary.length + 1;
-    this.currentTour.itinerary.push({ day: `Day ${nextDayNum}`, title: '', details: '' });
+    this.currentTour.itinerary.push({
+      day: `Day ${nextDayNum}`,
+      title: '',
+      details: ''
+      // Day-wise image property removed
+    });
   }
 
+  // ... other existing methods (deleteTour, editTour, logout)
   removeDay(index: number) {
     this.currentTour.itinerary.splice(index, 1);
   }
@@ -126,6 +137,11 @@ export class AdminToursComponent implements OnInit {
   resetForm() {
     this.isEditing = false;
     this.submitted = false;
-    this.currentTour = { name: '', cost: '', itinerary: [] };
+    this.currentTour = {
+      name: '',
+      cost: '',
+      images: [],
+      itinerary: []
+    };
   }
 }

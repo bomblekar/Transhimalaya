@@ -3,19 +3,20 @@ export interface ItineraryDay {
     title: string;
     details: string;
   }
-  
-  export interface TourPackage {
-    _id?: string; // <--- ADD THE '?' HERE. This fixes the error.
-    name: string;
-    cost: string;
-    itinerary: ItineraryDay[];
-    
-    // Optional frontend properties (for pricing logic)
-    baseCost?: number;
-    carExtraCost?: number;
-    totalCost?: number;
-    selectedCarId?: string;
-  }
+export interface ItineraryItem {
+  day: string;
+  title: string;
+  details: string;
+  image?: string; // Optional sightseeing image URL
+}
+
+export interface TourPackage {
+  _id?: string;
+  name: string;
+  cost: string;  // Optional Hero image URL
+  itinerary: ItineraryItem[];
+  images: string[]; // Additional image URLs
+}
   
   export interface Testimonial {
     text: string;
